@@ -7,11 +7,25 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    (async () => {
+      try {
+        // Handles email confirmation links that include ?code=...
+        const url = new URL(window.location.href);
+        const code = url.searchParams.get('code');
+        if (code) {
+          await supabase.auth.exchangeCodeForSession(code);
+          url.searchParams.delete('code');
+          window.history.replaceState({}, document.title, url.toString());
+        }
+      } catch {
+        // Non-blocking: continue with regular session lookup.
+      }
+
+      const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
       if (session?.user) fetchProfile(session.user);
       else setLoading(false);
-    });
+    })();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
@@ -70,7 +84,13 @@ export function useAuth() {
   }
 
   async function signUp(email, password, fullName) {
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/chat`,
+      },
+    });
     if (!error && data.user) {
       await supabase.from('profiles').insert({
         id: data.user.id, email, full_name: fullName, plan: 'free'

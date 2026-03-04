@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --scrollbar-thumb: #C9973A;
+    --scrollbar-track: #F5F0E8;
+  }
+  html { @apply font-serif; }
+  body { @apply bg-parchment-50 text-ink-800 antialiased; }
+  .dark body { @apply bg-ink-900 text-parchment-100; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+  ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+
+  .verse-text { @apply font-serif italic leading-relaxed text-ink-800; }
+  .dark .verse-text { @apply text-parchment-200; }
+}
+
+@layer components {
+  .gold-rule {
+    @apply border-t border-gold-400/40;
+    background: linear-gradient(90deg, transparent, rgba(201,151,58,0.3), transparent);
+    height: 1px;
+    border: none;
+  }
+  .manuscript-border {
+    border-image: linear-gradient(135deg, #C9973A, #E8C470, #C9973A) 1;
+  }
+  .streaming-cursor::after {
+    content: '▋';
+    @apply text-gold-500 animate-pulse ml-0.5;
+  }
+  .btn-primary {
+    @apply bg-mahogany-700 hover:bg-mahogany-800 text-parchment-100 font-sans font-medium
+           px-5 py-2.5 rounded-lg transition-all duration-200
+           hover:shadow-lg hover:shadow-mahogany-700/30;
+  }
+  .btn-gold {
+    @apply bg-gold-500 hover:bg-gold-600 text-mahogany-900 font-sans font-semibold
+           px-5 py-2.5 rounded-lg transition-all duration-200
+           hover:shadow-lg hover:shadow-gold-500/40;
+  }
+  .btn-ghost {
+    @apply text-ink-800 hover:bg-parchment-200 font-sans font-medium
+           px-4 py-2 rounded-lg transition-colors duration-150;
+  }
+  .dark .btn-ghost { @apply text-parchment-200 hover:bg-ink-800; }
+  .input-field {
+    @apply w-full bg-white dark:bg-ink-800 border border-parchment-300 dark:border-ink-800/60
+           rounded-lg px-4 py-2.5 font-serif text-ink-800 dark:text-parchment-100
+           placeholder:text-ink-800/40 dark:placeholder:text-parchment-300/40
+           focus:outline-none focus:ring-2 focus:ring-gold-400/60 focus:border-gold-400
+           transition-all duration-200;
+  }
+}
